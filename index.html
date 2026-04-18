@@ -143,16 +143,16 @@
                 };
 
                 // ---- ส่วนที่ส่งข้อมูลไป Google Sheet ----
-                // กำหนด URL ที่ได้จาก Google Apps Script ของคุณหมอตรงนี้
-                const GOOGLE_SCRIPT_URL = "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่"; 
+                // ใส่ URL จริงที่คุณหมอให้มา
+                const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqKkh4Nbw6UyStPbi6Z_IUiGVSpZKGNm572uK-y1q_sP5iWt9vpPafmETLlIzJ4Wpf/exec"; 
 
                 try {
-                    if(GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbz26aZD1WRs1QaU-JIxRvgNya7gd77t80iIF4Sw8NFGe7vSXh8anRcDswpO6YGUi_qh/exec") {
+                    if(GOOGLE_SCRIPT_URL.startsWith("http")) {
                         await fetch(GOOGLE_SCRIPT_URL, {
                             method: "POST",
-                            mode: "no-cors",
+                            // แก้ไขเพื่อหลีกเลี่ยงปัญหา CORS Block ของ Google
                             headers: {
-                                "Content-Type": "application/json",
+                                "Content-Type": "text/plain;charset=utf-8",
                             },
                             body: JSON.stringify(newRecord)
                         });
@@ -200,7 +200,6 @@
             };
 
             // ---------------- UI Render Functions ----------------
-            // เปลี่ยนจาก React Components มาเป็น Render Functions เพื่อป้องกันปัญหาช่องกรอกข้อความหลุดโฟกัสตอนพิมพ์
             const renderRoleSelection = () => (
                 <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-50 to-indigo-50 animate-fadeIn">
                     <div className="text-center mb-10 w-full max-w-lg">
