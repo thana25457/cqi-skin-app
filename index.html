@@ -99,20 +99,14 @@
             const activeQuestions = [...coreQuestions, ...(phaseQuestions[patientData.phase] || [])];
 
             // ---------------- การจัดการ Local Storage ----------------
-            // ดึงข้อมูลจาก Local Storage ตอนเริ่มต้น ถ้าไม่มีให้ใช้ข้อมูลจำลอง
             const [dbData, setDbData] = useState(() => {
                 const savedData = localStorage.getItem('cqiDbData');
                 if (savedData) {
                     return JSON.parse(savedData);
                 }
-                return [
-                    { id: 1, name: 'สมศรี ใจดี', score: 100, grade: 1, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 09:15' },
-                    { id: 2, name: 'มาลี รักสวย', score: 40, grade: 3, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 10:30' },
-                    { id: 3, name: 'วันเพ็ญ เด่นดวง', score: 80, grade: 0, phase: 'ก่อนเริ่มฉายแสง', timestamp: '18/4/2026, 08:20' },
-                ];
+                return [];
             });
 
-            // บันทึกข้อมูลลง Local Storage ทุกครั้งที่ dbData มีการเปลี่ยนแปลง
             useEffect(() => {
                 localStorage.setItem('cqiDbData', JSON.stringify(dbData));
             }, [dbData]);
@@ -152,7 +146,6 @@
                     timestamp: timestampStr
                 };
 
-                // ---- ส่วนที่ส่งข้อมูลไป Google Sheet ----
                 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqKkh4Nbw6UyStPbi6Z_IUiGVSpZKGNm572uK-y1q_sP5iWt9vpPafmETLlIzJ4Wpf/exec"; 
 
                 try {
@@ -225,7 +218,7 @@
                             </div>
                             <div className="text-left">
                                 <h2 className="text-xl font-bold text-slate-800">สำหรับผู้ป่วย</h2>
-                                <p className="text-slate-500 text-sm mt-1">ทำแบบทดสอบและประเมินแผล</p>
+                                <p className="text-slate-500 text-sm mt-1">ศึกษาความรู้และทำแบบทดสอบ</p>
                             </div>
                             <i className="ph ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500 text-xl"></i>
                         </button>
@@ -280,8 +273,8 @@
                         <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
                             <i className="ph ph-user text-3xl"></i>
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">ลงทะเบียนประเมิน</h2>
-                        <p className="text-slate-500 mb-8 text-sm">กรุณาระบุข้อมูลเพื่อเริ่มทำแบบประเมิน</p>
+                        <h2 className="text-2xl font-bold text-slate-800 mb-2">ลงทะเบียนเพื่อเรียนรู้</h2>
+                        <p className="text-slate-500 mb-8 text-sm">กรุณาระบุข้อมูลเพื่อเข้าสู่บทเรียนและแบบประเมิน</p>
                         
                         <div className="space-y-5">
                             <div>
@@ -297,8 +290,134 @@
                                     <option value="post">หลังจบคอร์ส (Post-test)</option>
                                 </select>
                             </div>
-                            <button onClick={() => { setStep('quiz'); setQuizAnswers({}); }} disabled={!patientData.name.trim()} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold py-4 rounded-xl transition-all shadow-md shadow-blue-200 disabled:shadow-none">เริ่มทำแบบประเมิน</button>
+                            <button onClick={() => { setStep('instruction'); setQuizAnswers({}); }} disabled={!patientData.name.trim()} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold py-4 rounded-xl transition-all shadow-md shadow-blue-200 disabled:shadow-none">เริ่มเรียนรู้การปฏิบัติตัว</button>
                         </div>
+                    </div>
+                </div>
+            );
+
+            // ---- หน้าความรู้การปฏิบัติตัว (สร้างใหม่) ----
+            const renderInstructionScreen = () => (
+                <div className="max-w-md mx-auto p-4 animate-fadeIn pb-28">
+                    <div className="mb-6 mt-4 text-center">
+                        <h2 className="text-2xl font-bold text-blue-900 mb-2">ข้อควรปฏิบัติสำหรับผู้ป่วยที่ฉายรังสี</h2>
+                        <p className="text-slate-600 text-sm">กรุณาศึกษาข้อมูลด้านล่างนี้ให้เข้าใจ ก่อนเริ่มทำแบบทดสอบ</p>
+                    </div>
+
+                    <div className="space-y-6">
+                        {/* 1. ผิวหนัง */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-4 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-drop text-xl"></i></div>
+                                1. การดูแลผิวหนังบริเวณที่ฉายรังสี
+                            </h3>
+                            
+                            <div className="space-y-3 mb-4">
+                                <h4 className="font-bold text-green-700 flex items-center gap-1"><i className="ph-fill ph-check-circle"></i> สิ่งที่ควรทำ</h4>
+                                <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-green-500">
+                                    <li>อาบน้ำได้ตามปกติ แต่ควรใช้น้ำอุ่นและสบู่อ่อนๆ ที่ไม่มีกลิ่น</li>
+                                    <li>ภายหลังอาบน้ำเสร็จ ให้ซับเบาๆ ด้วยผ้าขนหนูนุ่มๆ ไม่ควรขัดถูแรง</li>
+                                    <li>สวมเสื้อผ้าที่หลวม ระบายอากาศได้ดี เช่น ผ้าฝ้าย เพื่อลดการเสียดสี</li>
+                                    <li>หากต้องออกแดด ควรใช้ร่ม หมวก เสื้อคลุมปิดบัง ไม่ควรให้แสงแดดโดนตรงๆ</li>
+                                    <li>หากผิวแห้ง ควรใช้ครีมบำรุงที่แพทย์หรือพยาบาลแนะนำเท่านั้น</li>
+                                </ul>
+                            </div>
+
+                            <div className="space-y-3 bg-red-50 p-3 rounded-xl border border-red-100">
+                                <h4 className="font-bold text-red-700 flex items-center gap-1"><i className="ph-fill ph-x-circle"></i> สิ่งที่ควรหลีกเลี่ยง</h4>
+                                <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-red-500">
+                                    <li>ห้ามใช้ครีม แป้ง น้ำหอม โลชั่น หรือยาทาผิวที่แพทย์ไม่ได้สั่ง</li>
+                                    <li>ห้ามเกา ขัด ถู หรือแปะพลาสเตอร์บนผิวที่ฉายรังสี</li>
+                                    <li>หลีกเลี่ยงการอาบน้ำร้อนจัด อบไอน้ำ หรือประคบร้อน</li>
+                                    <li><strong>อย่าลบเส้นที่แพทย์ทำเครื่องหมายบนผิว</strong> (ใช้เพื่อจัดตำแหน่งการฉาย)</li>
+                                    <li>ห้ามโกนขนด้วยมีดโกนบริเวณที่ฉาย (สามารถใช้กรรไกรเล็มได้ถ้าจำเป็น)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* 2. พักผ่อนและโภชนาการ */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-4 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-bowl-food text-xl"></i></div>
+                                2. การพักผ่อนและโภชนาการ
+                            </h3>
+                            
+                            <div className="space-y-4 text-sm text-slate-700">
+                                <div>
+                                    <h4 className="font-bold text-slate-800 mb-1">การพักผ่อน</h4>
+                                    <ul className="list-disc pl-5 space-y-1.5 marker:text-blue-400">
+                                        <li>นอนหลับให้ได้วันละ 6-8 ชั่วโมง ถ้าง่วงหรือล้า ให้พักระหว่างวันได้ ไม่ต้องฝืน</li>
+                                        <li>พยายามทำกิจกรรมเบาๆ เช่น เดินช้าๆ ยืดเหยียด เพื่อให้ร่างกายยังแข็งแรง</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-800 mb-1">โภชนาการ</h4>
+                                    <ul className="list-disc pl-5 space-y-1.5 marker:text-blue-400">
+                                        <li>ทานอาหารให้ครบ 5 หมู่ เพื่อให้ร่างกายมีพลังงานและซ่อมแซมส่วนที่สึกหรอ</li>
+                                        <li>เลือกอาหารที่ย่อยง่าย เช่น โจ๊ก ข้าวต้ม ซุป เนื้อปลา ไข่ ผักนุ่มๆ ผลไม้สุก</li>
+                                        <li><strong>หลีกเลี่ยง อาหารรสจัด เผ็ด มัน เค็ม หรือหวานจัด</strong> เพราะอาจกระตุ้นให้มีอาการแสบร้อน คลื่นไส้ ท้องเสีย</li>
+                                        <li>ดื่มน้ำมากๆ อย่างน้อยวันละ 6-8 แก้ว เพื่อลดอาการปากแห้ง คอแห้ง</li>
+                                        <li>กินทีละน้อย แต่บ่อยครั้ง หากมีอาการคลื่นไส้ ไม่จำเป็นต้องฝืนกินมื้อใหญ่</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. การดูแลช่องปาก */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-3 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-tooth text-xl"></i></div>
+                                3. การดูแลช่องปาก (บริเวณหัว/คอ)
+                            </h3>
+                            <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-blue-400">
+                                <li>บ้วนปากด้วยน้ำเกลือหรือตามคำแนะนำของแพทย์ และดูแลสุขภาพช่องปากอย่างสม่ำเสมอ</li>
+                                <li>ถ้ามีฟันผุ ควรได้รับการรักษา และควรตรวจสุขภาพฟันก่อนการฉายรังสี</li>
+                            </ul>
+                        </div>
+
+                        {/* 4. การติดตามภาวะทั่วไป */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-3 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-heartbeat text-xl"></i></div>
+                                4. การติดตามภาวะทั่วไป
+                            </h3>
+                            <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-blue-400">
+                                <li>มาฉายรังสีให้ตรงเวลานัดเสมอ หากมีอาการผิดปกติ เช่น <strong>เจ็บปวด อ่อนเพลีย เบื่ออาหาร หรือกลืนลำบาก ควรแจ้งแพทย์ทันที</strong></li>
+                                <li>ตรวจเลือด (เช่น CBC) อย่างน้อยสัปดาห์ละครั้ง เพื่อตรวจสุขภาพโดยรวม</li>
+                            </ul>
+                        </div>
+
+                        {/* 5. การดูแลจิตใจ */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-3 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-smiley text-xl"></i></div>
+                                5. การดูแลด้านจิตใจและความรู้สึก
+                            </h3>
+                            <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-blue-400">
+                                <li>พยายามผ่อนคลาย จัดกิจกรรมที่ชอบ เช่น อ่านหนังสือ ฟังเพลง หรือพูดคุยกับคนใกล้ชิด</li>
+                                <li>เข้ารับคำปรึกษาทางจิตใจหรือจิตสังคม หากรู้สึกเครียด วิตกกังวล หรือซึมเศร้า</li>
+                            </ul>
+                        </div>
+
+                        {/* 6. การคุมกำเนิด */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100">
+                            <h3 className="font-bold text-lg text-blue-800 mb-3 flex items-center gap-2 border-b pb-2">
+                                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><i className="ph-fill ph-gender-female text-xl"></i></div>
+                                6. การคุมกำเนิดสำหรับผู้หญิง
+                            </h3>
+                            <ul className="list-disc pl-5 text-sm text-slate-700 space-y-1.5 marker:text-blue-400">
+                                <li>ควรหลีกเลี่ยงการตั้งครรภ์ระหว่างการฉายรังสี เนื่องจากรังสีอาจส่งผลกระทบต่อทารกได้</li>
+                                <li>ควรใช้วิธีคุมกำเนิดที่เหมาะสมตามคำแนะนำของแพทย์ตลอดช่วงการรักษา</li>
+                                <li>หากตั้งครรภ์ระหว่างการรักษา <strong>ต้องรีบแจ้งแพทย์ทันที</strong></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div className="fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t border-slate-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-30">
+                        <button onClick={() => setStep('quiz')} className="w-full max-w-md mx-auto block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-200 transition-colors">
+                            เริ่มทำแบบทดสอบ <i className="ph ph-arrow-right text-xl"></i>
+                        </button>
                     </div>
                 </div>
             );
@@ -308,8 +427,8 @@
                     <div className="mb-8 mt-2">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2 text-blue-700">
-                                <i className="ph ph-book-open text-2xl"></i>
-                                <h2 className="text-xl font-bold">ประเมินความรู้</h2>
+                                <i className="ph ph-list-numbers text-2xl"></i>
+                                <h2 className="text-xl font-bold">แบบทดสอบความรู้</h2>
                             </div>
                             <span className="text-sm font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">{Object.keys(quizAnswers).length} / {activeQuestions.length}</span>
                         </div>
@@ -336,7 +455,7 @@
                     </div>
 
                     {Object.keys(quizAnswers).length === activeQuestions.length && (
-                        <div className="fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t border-slate-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)]">
+                        <div className="fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t border-slate-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-30">
                             <button onClick={() => setStep('symptom')} className="w-full max-w-md mx-auto block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-200 transition-colors">
                                 ถัดไป: ประเมินผิวหนัง <i className="ph ph-arrow-right text-xl"></i>
                             </button>
@@ -389,7 +508,7 @@
                             ))}
                         </div>
 
-                        <div className="fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t border-slate-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)]">
+                        <div className="fixed bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t border-slate-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-30">
                             <button onClick={submitPatientAssessment} disabled={skinGrade === null || isSubmitting} className="w-full max-w-md mx-auto block bg-green-600 hover:bg-green-700 disabled:bg-slate-300 text-white font-bold py-4 rounded-xl disabled:shadow-none shadow-lg shadow-green-200 transition-all flex items-center justify-center gap-2">
                                 {isSubmitting ? (
                                     <span>กำลังบันทึกข้อมูล...</span>
@@ -581,7 +700,7 @@
             if (role === 'staff') return renderStaffDashboard();
 
             return (
-                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 selection:bg-blue-200 flex flex-col">
+                <div className="min-h-screen bg-slate-50 font-sans text-slate-800 selection:bg-blue-200 flex flex-col relative">
                     <header className="bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-20 flex justify-between items-center shadow-sm shrink-0">
                         <div className="flex items-center gap-2">
                             <i className="ph ph-hospital text-blue-600 text-2xl"></i>
@@ -593,6 +712,7 @@
                     </header>
                     <main className="flex-1 overflow-y-auto">
                         {step === 'patient_login' && renderPatientLogin()}
+                        {step === 'instruction' && renderInstructionScreen()}
                         {step === 'quiz' && renderQuizScreen()}
                         {step === 'symptom' && renderSymptomScreen()}
                         {step === 'result' && renderPatientResultScreen()}
