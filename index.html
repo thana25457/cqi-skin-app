@@ -98,11 +98,24 @@
 
             const activeQuestions = [...coreQuestions, ...(phaseQuestions[patientData.phase] || [])];
 
-            const [dbData, setDbData] = useState([
-                { id: 1, name: 'สมศรี ใจดี', score: 100, grade: 1, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 09:15' },
-                { id: 2, name: 'มาลี รักสวย', score: 40, grade: 3, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 10:30' },
-                { id: 3, name: 'วันเพ็ญ เด่นดวง', score: 80, grade: 0, phase: 'ก่อนเริ่มฉายแสง', timestamp: '18/4/2026, 08:20' },
-            ]);
+            // ---------------- การจัดการ Local Storage ----------------
+            // ดึงข้อมูลจาก Local Storage ตอนเริ่มต้น ถ้าไม่มีให้ใช้ข้อมูลจำลอง
+            const [dbData, setDbData] = useState(() => {
+                const savedData = localStorage.getItem('cqiDbData');
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+                return [
+                    { id: 1, name: 'สมศรี ใจดี', score: 100, grade: 1, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 09:15' },
+                    { id: 2, name: 'มาลี รักสวย', score: 40, grade: 3, phase: 'สัปดาห์ที่ 3 - 4', timestamp: '17/4/2026, 10:30' },
+                    { id: 3, name: 'วันเพ็ญ เด่นดวง', score: 80, grade: 0, phase: 'ก่อนเริ่มฉายแสง', timestamp: '18/4/2026, 08:20' },
+                ];
+            });
+
+            // บันทึกข้อมูลลง Local Storage ทุกครั้งที่ dbData มีการเปลี่ยนแปลง
+            useEffect(() => {
+                localStorage.setItem('cqiDbData', JSON.stringify(dbData));
+            }, [dbData]);
 
             const currentScore = Object.keys(quizAnswers).reduce((score, qId) => {
                 const q = activeQuestions.find(q => q.id === parseInt(qId));
